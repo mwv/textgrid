@@ -1,0 +1,55 @@
+#+AUTHOR: Maarten Versteegh
+* TextGrid
+Reading, writing, modifying [[http://www.fon.hum.uva.nl/praat/][Praat]] [[http://www.fon.hum.uva.nl/praat/manual/TextGrid.html][TextGrid]] files in Python. Handles three different TextGrid formats: short, long and chronological. Robust against minor deviations from the standard Praat output, such as in the annotation files of the [[http://lands.let.ru.nl/cgn/ehome.htm][Corpus Gesproken Nederlands]]. This robustness comes at a price; parsing is slower than using the TextGrid parser included in the [[http://nltk.org/][NLTK]] toolkit. This code, however, can handle more TextGrid formats than NLTK.
+
+** Usage
+Reading a TextGrid file:
+: with open('/path/to/textgridfile', 'r') as f:
+:     my_textgrid = TextGrid.read(f)
+
+Writing a TextGrid to a file:
+: with open('/path/to/outputfile', 'w') as f:
+:     my_textgrid.write(f)
+
+Selecting a tier by name:
+: my_tier = my_textgrid['Words']
+
+Selecting a tier by number:
+: my_tier = my_textgrid[0]
+
+Deleting a tier:
+: del my_textgrid['Word']
+
+Getting and setting a tier's attributes:
+: print my_tier.name, my_tier.start, my_tier.end
+: my_tier.start = 0.0
+
+Getting, modifying and deleting an interval in a tier:
+: print my_tier[0].mark, my_tier[0].start, my_tier[0].end
+: my_tier[0].mark = 'word'
+: del my_tier[0]
+
+Iterating over the tiers:
+: for tier in my_textgrid:
+:     print tier.name
+
+Iterating over tiers and intervals:
+: for tier in my_textgrid:
+:     print tier.name
+:     for interval in tier:
+:         print '\t' + interval.mark
+
+Getting the transcription for a tier:
+: print my_tier.transcription
+
+Convert a TextGrid to json for easy program interoperability:
+: print my_textgrid.to_json()
+
+Read from json:
+: my_textgrid.from_json(json_string)
+
+etc.
+
+** Requirements
++ python 2.7.x
++ [[http://pyparsing.wikispaces.com/][pyparsing]]

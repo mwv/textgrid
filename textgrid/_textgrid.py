@@ -467,7 +467,8 @@ class TextGrid(object):
         return json.dumps(self, sort_keys=sort_keys,
                           indent=indent, cls=Encoder)
 
-    def from_json(self, text):
+    @staticmethod
+    def from_json(text):
         class Decoder(json.JSONDecoder):
             def __init__(self):
                 json.JSONDecoder.__init__(self,
@@ -484,8 +485,7 @@ class TextGrid(object):
                 else:
                     inst = d
                 return inst
-        self = Decoder().decode(text)
-        return self
+        return Decoder().decode(text)
 
     def write(self, stream, fmt='long'):
         """Write \c TextGrid object out in long format

@@ -44,9 +44,9 @@ class Interval(object):
 
     def __str__(self, ):
         return '<Interval ({start}, {end}, {mark})>'.format(
-            start=start,
-            end=end,
-            mark=mark)
+            start=self.start,
+            end=self.end,
+            mark=self.mark)
 
     def __eq__(self, other):
         return all(getattr(self, k) == getattr(other, k)
@@ -116,6 +116,11 @@ class Tier(object):
         self.start = start
         self.end = end
         self.entries = entries
+        self._sort_entries()
+
+    def _sort_entries(self):
+        self.entries = sorted(self.entries,
+                              key=lambda x: (x.start, x.end, x.mark))
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.__dict__)
@@ -138,9 +143,11 @@ class Tier(object):
 
     def __setitem__(self, k, v):
         self.entries[k] = v
+        self._sort_entries()
 
     def __delitem__(self, k):
         del self.entries[k]
+        self._sort_entries()
 
     @property
     def size(self):

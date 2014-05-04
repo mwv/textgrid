@@ -119,8 +119,13 @@ class Tier(object):
         self._sort_entries()
 
     def _sort_entries(self):
-        self.entries = sorted(self.entries,
-                              key=lambda x: (x.start, x.end, x.mark))
+        if not self.entries:
+            return
+        if isinstance(self.entries[0], Point):
+            cmp = lambda x: (x.time, x.mark)
+        else:
+            cmp = lambda x: (x.start, x.end, x.mark)
+        self.entries = sorted(self.entries, key=cmp)
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.__dict__)

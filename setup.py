@@ -19,7 +19,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='textgrid',
-    version='0.1.1',
+    version='0.1.2',
     description='Python package to read, write and manipulate Praat TextGrid files.',
     long_description=readme + '\n\n' + history,
     author='Maarten Versteegh',

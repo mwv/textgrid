@@ -522,28 +522,25 @@ class TextGrid(object):
         # TODO implement
         raise NotImplementedError
 
-    def _write_long(stream):
+    def _write_long(self, stream):
         print >>stream, 'File type = "ooTextFile"'
         print >>stream, 'Object class = "TextGrid"'
         print >>stream, ''
-        print >>stream, 'xmin = {start}'.format(start=self.start)
-        print >>stream, 'xmax = {end}'.format(end=self.end)
+        print >>stream, 'xmin = {0}'.format(self.start)
+        print >>stream, 'xmax = {0}'.format(self.end)
         print >>stream, 'tiers? <exists>'
-        print >>stream, 'size = {ntiers}'.format(ntiers=len(self.tiers))
+        print >>stream, 'size = {0}'.format(len(self.tiers))
         print >>stream, 'item []:'
         for tdx, tier in enumerate(self.tiers):
-            print >>stream, '\titem [{tdx}]:'.format(tdx=tdx+1)
+            print >>stream, '\titem [{0}]:'.format(tdx+1)
             print >>stream, '\t\tclass = "IntervalTier"'
-            print >>stream, '\t\tname = "{name}"'.format(tier.name)
-            print >>stream, '\t\txmin = {start:.3f}'.format(tier.start)
-            print >>stream, '\t\txmax = {end:.3f}'.format(tier.end)
-            print >>stream, '\t\tintervals: size = {nintervals}'.format(
-                nintervals=len(tier.intervals))
+            print >>stream, '\t\tname = "{0}"'.format(tier.name)
+            print >>stream, '\t\txmin = {0:.3f}'.format(tier.start)
+            print >>stream, '\t\txmax = {0:.3f}'.format(tier.end)
+            print >>stream, '\t\tintervals: size = {0}'.format(
+                len(tier.intervals))
             for idx, interval in enumerate(tier.intervals):
-                print >>stream, '\t\tintervals [{idx}]'.format(idx=idx+1)
-                print >>stream, '\t\t\txmin = {start:.3f}'.format(
-                    start=interval.start)
-                print >>stream, '\t\t\txmax = {end:.3f}'.format(
-                    end=interval.end)
-                print >>stream, '\t\t\ttext = "{mark}"'.format(
-                    mark=interval.mark)
+                print >>stream, '\t\tintervals [{0}]'.format(idx+1)
+                print >>stream, '\t\t\txmin = {0:.3f}'.format(interval.start)
+                print >>stream, '\t\t\txmax = {0:.3f}'.format(interval.end)
+                print >>stream, '\t\t\ttext = "{0}"'.format(interval.mark)

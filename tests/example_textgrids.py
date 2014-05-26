@@ -97,14 +97,14 @@ item []:
         intervals: size = 3
         intervals [1]:
             xmin = 0
-            xmax = 0.5207695865651463
+            xmax = 0.5207
             text = "word1"
         intervals [2]:
-            xmin = 0.5207695865651463
-            xmax = 2.054427880167936
+            xmin = 0.5207
+            xmax = 2.0544
             text = "word2"
         intervals [3]:
-            xmin = 2.054427880167936
+            xmin = 2.0544
             xmax = 3.5
             text = "word3"
     item [2]:
@@ -114,10 +114,10 @@ item []:
         xmax = 3.5
         points: size = 2
         points [1]:
-            number = 1.7253166583647621
+            number = 1.7253
             mark = "here is a point"
         points [2]:
-            number = 2.3045524087383478
+            number = 2.3045
             mark = "and here's another one"
 '''
 
@@ -137,15 +137,15 @@ item []:
         intervals: size = 3
         intervals [1]:
             xmin = 0
-            xmax = 0.5207695865651463
+            xmax = 0.5207
             text =
 "word1"
         intervals [2]:
-            xmin = 0.5207695865651463
-            xmax = 2.054427880167936
+            xmin = 0.5207
+            xmax = 2.0544
             text = "word2"
         intervals [3]:
-            xmin = 2.054427880167936
+            xmin = 2.0544
             xmax = 3.5
             text = "word3"
     item [2]:
@@ -156,10 +156,10 @@ item []:
 3.5
         points: size = 2
 points [1]:
-            number = 1.7253166583647621
+            number = 1.7253
             mark = "here is a point"
         points [2]:
-            number = 2.3045524087383478
+            number = 2.3045
             mark = "and here's another one"
 '''
 
@@ -176,12 +176,12 @@ Object class = "TextGrid"
 3.5
 3
 0
-0.5207695865651463
+0.5207
 "word1"
-0.5207695865651463
-2.054427880167936
+0.5207
+2.0544
 "word2"
-2.054427880167936
+2.0544
 3.5
 "word3"
 "TextTier"
@@ -189,9 +189,9 @@ Object class = "TextGrid"
 0
 3.5
 2
-1.7253166583647621
+1.7253
 "here is a point"
-2.3045524087383478
+2.3045
 "and here's another one"
 '''
 
@@ -208,12 +208,12 @@ Object class = "TextGrid"
 3.5
 3
 0
-0.5207695865651463
+0.5207
 "word1"
-0.5207695865651463
-2.054427880167936
+0.5207
+2.0544
 "word2"
-2.054427880167936
+2.0544
 3.5
 "word3"
 "TextTier"
@@ -221,9 +221,9 @@ Object class = "TextGrid"
 0
 3.5
 2
-1.7253166583647621
+1.7253
 "here is a point"
-2.3045524087383478
+2.3045
 "and here's another one"
 '''
 
@@ -240,12 +240,12 @@ invalid_token
 3.5
 3
 0
-0.5207695865651463
+0.5207
 "word1"
-0.5207695865651463
-2.054427880167936
+0.5207
+2.0544
 "word2"
-2.054427880167936
+2.0544
 3.5
 "word3"
 "TextTier"
@@ -253,9 +253,9 @@ invalid_token
 0
 3.5
 2
-1.7253166583647621
+1.7253
 "here is a point"
-2.3045524087383478
+2.3045
 "and here's another one"
 '''
 
@@ -272,13 +272,13 @@ Object class = "TextGrid"
 3.5
 3
 0
-0.5207695865651463
+0.5207
 "word1"
-0.5207695865651463
+0.5207
 0.3
-2.054427880167936
+2.0544
 "word2"
-2.054427880167936
+2.0544
 3.5
 "word3"
 "TextTier"
@@ -286,10 +286,10 @@ Object class = "TextGrid"
 0
 3.5
 2
-1.7253166583647621
+1.7253
 "here is a point"
 invalid_token
-2.3045524087383478
+2.3045
 "and here's another one"
 '''
 
@@ -300,23 +300,23 @@ valid_chron_1 = '''"Praat chronological TextGrid text file"
 "TextTier" "First_Point_Tier" 0 3.5
 
 ! First_Interval_Tier:
-1 0 0.5207695865651463
+1 0 0.5207
 "word1"
 
 ! First_Interval_Tier:
-1 0.5207695865651463 2.054427880167936
+1 0.5207 2.0544
 "word2"
 
 ! First_Point_Tier:
-2 1.7253166583647621
+2 1.7253
 "here is a point"
 
 ! First_Interval_Tier:
-1 2.054427880167936 3.5
+1 2.0544 3.5
 "word3"
 
 ! First_Point_Tier:
-2 2.3045524087383478
+2 2.3045
 "and here's another one"'''
 
 valid_chron_2 = '''"Praat chronological TextGrid text file"
@@ -326,23 +326,23 @@ valid_chron_2 = '''"Praat chronological TextGrid text file"
 "TextTier" "First_Point_Tier" 0 3.5
 
 valid token
-1 0 0.5207695865651463
+1 0 0.5207
 "word1"
 
 valid token
-1 0.5207695865651463 2.054427880167936
+1 0.5207 2.0544
 "word2"
 
 valid token
-2 1.7253166583647621
+2 1.7253
 "here is a point"
 
 valid token
-1 2.054427880167936 3.5
+1 2.0544 3.5
 "word3"
 
 valid token
-2 2.3045524087383478
+2 2.3045
 "and here's another one"'''
 
 invalid_header_chron = '''"Praat chronological TextGrid text file"
@@ -352,23 +352,23 @@ invalid_header_chron = '''"Praat chronological TextGrid text file"
 "TextTier" "First_Point_Tier" 0 3.5
 
 ! First_Interval_Tier:
-1 0 0.5207695865651463
+1 0 0.5207
 "word1"
 
 ! First_Interval_Tier:
-1 0.5207695865651463 2.054427880167936
+1 0.5207 2.0544
 "word2"
 
 ! First_Point_Tier:
-2 1.7253166583647621
+2 1.7253
 "here is a point"
 
 ! First_Interval_Tier:
-1 2.054427880167936 3.5
+1 2.0544 3.5
 "word3"
 
 ! First_Point_Tier:
-2 2.3045524087383478
+2 2.3045
 "and here's another one"'''
 
 invalid_entry_chron = '''"Praat chronological TextGrid text file"
@@ -377,13 +377,13 @@ invalid_entry_chron = '''"Praat chronological TextGrid text file"
 "IntervalTier" "First_Interval_Tier" 0 3.5
 
 ! First_Interval_Tier:
-1 0 0.5207695865651463
+1 0 0.5207
 "word1"
 
 ! First_Interval_Tier:
-1 0.5207695865651463 2.054427880167936
+1 0.5207 2.0544
 "word2"
 
 ! First_Interval_Tier:
-1 2.054427880167936 3.5
+1 2.0544 3.5
 "word3"'''

@@ -10,6 +10,8 @@ Tests for `textgrid` module.
 
 import unittest
 
+import StringIO
+
 from textgrid import TextGrid, Tier, Interval, Point, \
     HeaderParseException, SizeException, ParseException
 
@@ -22,21 +24,23 @@ expected_textgrid = TextGrid(0.0, 3.5,
                              [Tier('First_Interval_Tier',
                                    0.0,
                                    3.5,
+                                   'Interval',
                                    [Interval(0.0,
-                                             0.5207695865651463,
+                                             0.5207,
                                              "word1"),
-                                    Interval(0.5207695865651463,
-                                             2.054427880167936,
+                                    Interval(0.5207,
+                                             2.0544,
                                              "word2"),
-                                    Interval(2.054427880167936,
+                                    Interval(2.0544,
                                              3.5,
                                              "word3")]),
                               Tier('First_Point_Tier',
                                    0.0,
                                    3.5,
-                                   [Point(1.7253166583647621,
+                                   'Point',
+                                   [Point(1.7253,
                                           "here is a point"),
-                                    Point(2.3045524087383478,
+                                    Point(2.3045,
                                           "and here's another one")])])
 
 expected_keys = list(expected_textgrid.keys())
@@ -48,7 +52,6 @@ class TestLong(unittest.TestCase):
         try:
             tg._parse_long(valid_long_1)
         except Exception as exc:
-            print exc
             self.fail('_parse_long raised unexpected exception: %s' % exc)
         self.assertEqual(expected_textgrid, tg)
 
@@ -95,8 +98,6 @@ class TestShort(unittest.TestCase):
 
     def test_invalid_entry(self):
         tg = TextGrid()
-        # tg._parse_short(invalid_entry_short)
-        # print tg.__repr__()
         self.assertRaises(SizeException,
                           tg._parse_short, invalid_entry_short)
 
@@ -160,6 +161,21 @@ class TestJSON(unittest.TestCase):
     def test_json(self):
         self.tg.from_json(self.tg.to_json())
         self.assertEqual(self.tg, expected_textgrid)
+
+class TestWriteLong(unittest.TestCase):
+    def setUp(self):
+        tg = TextGrid()
+        tg._parse_long(valid_long_1)
+        self.tg = tg
+
+    def test_write_long(self):
+        s = StringIO.StringIO()
+        self.tg._write_long(s)
+        tg2_string = s.getvalue()
+        s.close()
+        tg2 = TextGrid()
+        tg2._parse_long(tg2_string)
+        self.assertEqual(self.tg, tg2)
 
 
 if __name__ == '__main__':

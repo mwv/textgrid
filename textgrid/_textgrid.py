@@ -21,7 +21,10 @@ from __future__ import division
 __all__ = ['Tier', 'Interval', 'Point', 'TextGrid']
 
 from pyparsing import *
-import cStringIO as StringIO
+try:
+    import cStringIO as StringIO
+except ImportError:
+    import StringIO
 import json
 
 # pyparsing elements
@@ -34,19 +37,43 @@ integer = Regex(r'\d+').setParseAction(lambda t: int(t[0]))
 
 
 class Interval(object):
-    def __init__(self, start, end, mark):
-        self.start = start
-        self.end = end
-        self.mark = mark
+    def __init__(self, xmin, xmax, text):
+        self.xmin = xmin
+        self.xmax = xmax
+        self.text = text
+
+    @property
+    def start(self):
+        return self.xmin
+
+    @start.setter
+    def start(self, v):
+        self.xmin = v
+
+    @property
+    def end(self):
+        return self.xmax
+
+    @end.setter
+    def end(self, v):
+        self.xmax = v
+
+    @property
+    def mark(self):
+        return self.text
+
+    @mark.setter
+    def mark(self, v):
+        self.text = v
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.__dict__)
 
     def __str__(self, ):
-        return '<Interval ({start}, {end}, {mark})>'.format(
-            start=self.start,
-            end=self.end,
-            mark=self.mark)
+        return '<Interval ({xmin}, {xmax}, {text})>'.format(
+            xmin=self.xmin,
+            xmax=self.xmax,
+            text=self.text)
 
     def __eq__(self, other):
         return all(getattr(self, k) == getattr(other, k)
@@ -57,9 +84,25 @@ class Interval(object):
 
 
 class Point(object):
-    def __init__(self, time, mark):
-        self.time = time
+    def __init__(self, number, mark):
+        self.number = number
         self.mark = mark
+
+    @property
+    def time(self):
+        return self.number
+
+    @time.setter
+    def time(self, value):
+        self.number = value
+
+    @property
+    def text(self):
+        return self.mark
+
+    @text.setter
+    def text(self, value):
+        self.mark = value
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, self.__dict__)
@@ -72,9 +115,9 @@ class Point(object):
         return not self.__eq__(other)
 
     def __str__(self, ):
-        return '<Point ({time}, {mark})>'.format(
-            time=time,
-            mark=mark)
+        return '<Point ({number}, {mark})>'.format(
+            number=self.number,
+            mark=self.mark)
 
 
 class HeaderParseException(ParseFatalException):
@@ -102,8 +145,9 @@ def error(exceptionclass):
 class Tier(object):
     """ Container class for IntervalTier and TextTier tiers.
     """
+    _valid_tier_types = ['Interval', 'Point']
 
-    def __init__(self, name, start, end, entries):
+    def __init__(self, name, start, end, tier_type, entries):
         """
 
         Arguments:
@@ -116,6 +160,11 @@ class Tier(object):
         self.start = start
         self.end = end
         self.entries = entries
+        if not tier_type in self._valid_tier_types:
+            raise ValueError('tier_type must be one of [{0}], not {1}'
+                             .format(', '.join(_valid_tier_types,
+                                               tier_type)))
+        self.tier_type = tier_type
         self._sort_entries()
 
     def _sort_entries(self):
@@ -160,13 +209,8 @@ class Tier(object):
 
     @property
     def transcription(self):
-        """
-        """
-        s = StringIO.StringIO()
-        for entry in self.entries:
-            if not entry.mark in ['', ' ']:
-                s.write(entry.mark + ' ')
-        return s.getvalue().strip()
+        return ' '.join(e.mark.strip() for e in self.entries
+                        if not e.mark in ['', ' '])
 
 
 class TextGrid(object):
@@ -342,6 +386,10 @@ class TextGrid(object):
                             Tier(t[0].name,
                                  t[0].start,
                                  t[0].end,
+                                 'Interval'
+                                 if isinstance(t[0].entries.asList()[0],
+                                                          Interval)
+                                 else 'Point',
                                  t[0].entries.asList()))
 
         def validate_grid(t):
@@ -397,6 +445,10 @@ class TextGrid(object):
                             Tier(t[0].name,
                                  t[0].start,
                                  t[0].end,
+                                 'Interval'
+                                 if isinstance(t[0].entries.asList()[0],
+                                                          Interval)
+                                 else 'Point',
                                  t[0].entries.asList()))
 
         def validate_grid(t):
@@ -431,6 +483,9 @@ class TextGrid(object):
                                tiers.append(Tier(t[0].name,
                                                  t[0].start,
                                                  t[0].end,
+                                                 'Interval'
+                                                 if t[0].type == 'IntervalTier'
+                                                 else 'Point',
                                                  [])))
         tier_ids = Group(OneOrMore(tier_id))
         prelude = Group(Suppress(line) +
@@ -523,24 +578,38 @@ class TextGrid(object):
         raise NotImplementedError
 
     def _write_long(self, stream):
-        print >>stream, 'File type = "ooTextFile"'
-        print >>stream, 'Object class = "TextGrid"'
-        print >>stream, ''
-        print >>stream, 'xmin = {0}'.format(self.start)
-        print >>stream, 'xmax = {0}'.format(self.end)
-        print >>stream, 'tiers? <exists>'
-        print >>stream, 'size = {0}'.format(len(self.tiers))
-        print >>stream, 'item []:'
+        stream.write('File type = "ooTextFile"\n')
+        stream.write('Object class = "TextGrid"\n')
+        stream.write('\n')
+        stream.write('xmin = {0}\n'.format(self.start))
+        stream.write('xmax = {0}\n'.format(self.end))
+        stream.write('tiers? <exists>\n')
+        stream.write('size = {0}\n'.format(len(self.tiers)))
+        stream.write('item []:\n')
         for tdx, tier in enumerate(self.tiers):
-            print >>stream, '\titem [{0}]:'.format(tdx+1)
-            print >>stream, '\t\tclass = "IntervalTier"'
-            print >>stream, '\t\tname = "{0}"'.format(tier.name)
-            print >>stream, '\t\txmin = {0:.3f}'.format(tier.start)
-            print >>stream, '\t\txmax = {0:.3f}'.format(tier.end)
-            print >>stream, '\t\tintervals: size = {0}'.format(
-                len(tier.intervals))
-            for idx, interval in enumerate(tier.intervals):
-                print >>stream, '\t\tintervals [{0}]'.format(idx+1)
-                print >>stream, '\t\t\txmin = {0:.3f}'.format(interval.start)
-                print >>stream, '\t\t\txmax = {0:.3f}'.format(interval.end)
-                print >>stream, '\t\t\ttext = "{0}"'.format(interval.mark)
+            if tier.tier_type == 'Interval':
+                stream.write('\titem [{0}]:\n'.format(tdx+1))
+                stream.write('\t\tclass = "IntervalTier"\n')
+                stream.write('\t\tname = "{0}"\n'.format(tier.name))
+                stream.write('\t\txmin = {0:f}\n'.format(tier.start))
+                stream.write('\t\txmax = {0:f}\n'.format(tier.end))
+                stream.write('\t\tintervals: size = {0}\n'.format(
+                    len(tier.entries)))
+                for idx, interval in enumerate(tier.entries):
+                    stream.write('\t\tintervals [{0}]:\n'.format(idx+1))
+                    stream.write('\t\t\txmin = {0}\n'.format(interval.start))
+                    stream.write('\t\t\txmax = {0}\n'.format(interval.end))
+                    stream.write('\t\t\ttext = "{0}"\n'.format(interval.mark))
+            else:  # tier.tier_type == 'Point'
+                stream.write('\titem [{0}]:\n'.format(tdx+1))
+                stream.write('\t\tclass = "TextTier"\n')
+                stream.write('\t\tname = "{0}"\n'.format(tier.name))
+                stream.write('\t\txmin = {0}\n'.format(tier.start))
+                stream.write('\t\txmax = {0}\n'.format(tier.end))
+                stream.write('\t\tpoints: size = {0}\n'.format(
+                    len(tier.entries)))
+                for idx, point in enumerate(tier.entries):
+                    stream.write('\t\tpoints [{0}]:\n'.format(idx+1))
+                    stream.write('\t\t\tnumber = {0}\n'
+                                 .format(point.number))
+                    stream.write('\t\t\tmark = "{0}"\n'.format(point.mark))
